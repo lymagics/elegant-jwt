@@ -1,0 +1,7 @@
+[flake8]
+max-line-length = 88
+extend-ignore =
+    # Black inserts whitespace before ':' in slices.
+    E203,
+    # plum-dispatch secondary constructors redefine __init__.
+    F811

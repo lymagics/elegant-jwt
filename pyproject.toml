@@ -1,0 +1,56 @@
+[project]
+name = "elegant-jwt"
+dynamic = ["version"]
+description = "JSON Web Tokens in the Elegant Objects style, on top of pyjwt."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Viacheslav Lymanskyi" }]
+keywords = ["jwt", "elegant-objects", "pyjwt"]
+dependencies = [
+    "pyjwt[crypto]==2.13.0",
+    "plum-dispatch==2.9.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+    "pytest-randomly==4.1.0",
+    "pytest-fail-slow==0.6.0",
+    "pyhamcrest==2.1.0",
+    "hypothesis==6.167.0",
+    "black==26.5.1",
+    "flake8==7.3.0",
+    "ruff==0.16.5",
+]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.0"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/elegant_jwt"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--fail-slow=5"
+
+[tool.coverage.run]
+source = ["elegant_jwt"]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+# F811 is triggered by plum-dispatch secondary constructors.
+# TRY002 contradicts the EO rule: all raised exceptions are plain Exception.
+extend-ignore = ["F811", "TRY002"]
+
+[tool.mutmut]
+paths_to_mutate = "src/elegant_jwt/"
+tests_dir = "tests/"

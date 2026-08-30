@@ -1,0 +1,27 @@
+name: linters
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_call:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+      - name: Install dependencies
+        run: uv sync
+      - name: Check formatting with black
+        run: uv run black --check src tests
+      - name: Check style with flake8
+        run: make flake8
+      - name: Lint with ruff
+        run: make ruff
