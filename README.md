@@ -6,6 +6,20 @@ JSON Web Tokens in the [Elegant Objects](https://www.elegantobjects.org/) style.
 The library hides `pyjwt` behind small immutable objects: a `Token`, its
 `Claims`, and a `Signature` that owns the algorithm and the key.
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Tokens That Expire](#tokens-that-expire)
+- [Refusing Expired Tokens](#refusing-expired-tokens)
+- [Stamping the Issuer](#stamping-the-issuer)
+- [Asymmetric Algorithms](#asymmetric-algorithms)
+- [Testing Without Waiting](#testing-without-waiting)
+- [Your Own Signature](#your-own-signature)
+- [Errors](#errors)
+- [Design](#design)
+- [Development](#development)
+
 ## Installation
 
 ```bash
