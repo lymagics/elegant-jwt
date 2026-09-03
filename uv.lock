@@ -400,7 +400,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "plum-dispatch", specifier = "==2.9.0" },
+    { name = "plum-dispatch", specifier = "==2.10.0" },
     { name = "pyjwt", extras = ["crypto"], specifier = "==2.13.0" },
 ]
 
@@ -621,28 +621,28 @@ wheels = [
 
 [[package]]
 name = "plum-dispatch"
-version = "2.9.0"
+version = "2.10.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "beartype" },
     { name = "rich" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1b/b7/84146ae5ff6c40d11357acdb36aafe3db7e104de01c1026d8e1b0ce3e7f1/plum_dispatch-2.9.0.tar.gz", hash = "sha256:fb45c5b2dd4dadd57def51bcf321dfa3a258df5c725f43adea7e7f6db3b79b52", size = 244502, upload-time = "2026-04-28T08:38:34.442Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f6/e1/b78b7423b6760d6663067730b495c51db2432391628496be1446d810d960/plum_dispatch-2.10.0.tar.gz", hash = "sha256:fd5caa4e0edb50a0d7974599335f2a37c4b9c083891e54d768aad8256059acd3", size = 250181, upload-time = "2026-09-03T13:26:41.781Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/80/e1/8fa7fffff5699fa9d7aae2c57de27f2b21a242189f8c102c80a0961dcc89/plum_dispatch-2.9.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:6c5f5dfd1afd42dfd738c1b7701b9e03279c52b4952d6bb56e169564b1d48eb9", size = 174089, upload-time = "2026-04-28T08:38:15.801Z" },
-    { url = "https://files.pythonhosted.org/packages/33/91/a2879973fd40c985aeb55ffe522d7b91c10062f82b251b9ad202f063a3e8/plum_dispatch-2.9.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:7cec06a2f2545a2b09e8dde81be6f1512e1df850b3ab2fbf582ef79a10956b23", size = 206109, upload-time = "2026-04-28T08:38:17.219Z" },
-    { url = "https://files.pythonhosted.org/packages/e2/3a/578642ace42b78507a98e8b27ad7d8554d197b7ec67d28eab6806b0a0fc0/plum_dispatch-2.9.0-cp310-cp310-win_amd64.whl", hash = "sha256:7e767a7e52f7d4cb3f10010024047d043c29d7ed0ab7df63bceef5371c44a2fa", size = 152556, upload-time = "2026-04-28T08:38:18.51Z" },
-    { url = "https://files.pythonhosted.org/packages/e0/20/7aa36a01b1689d427a9fc20c80b1c0bc8340d1413c8071f08fb1e9a01939/plum_dispatch-2.9.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:25f62c2209b7bff00c6cdc25fe153ac09df304d7d833fab2852fc46fffbb7e87", size = 172039, upload-time = "2026-04-28T08:38:19.985Z" },
-    { url = "https://files.pythonhosted.org/packages/63/01/eee83f936500e3e0100ac421483fa78768fec70214e4ce0241187ec3a2f1/plum_dispatch-2.9.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:f4d34cab84908abbdff501e356296eba960ff5d5fc04668b71ebc6f9ff84fa2f", size = 203364, upload-time = "2026-04-28T08:38:21.431Z" },
-    { url = "https://files.pythonhosted.org/packages/d8/05/78c229ccce36fbd6dbc1cde698baae57313515ff1bff6ebad28be46c9386/plum_dispatch-2.9.0-cp311-cp311-win_amd64.whl", hash = "sha256:1050150b6ae3600ac19a406b23cb7d0707825b227f608a54b8be9994d1f4b710", size = 152110, upload-time = "2026-04-28T08:38:22.975Z" },
-    { url = "https://files.pythonhosted.org/packages/82/d6/fc6591336731b5e291319ec3c43d81cd6cc7940c9079183b333b85ed4d77/plum_dispatch-2.9.0-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:39a325b0b041fad687271d71abc11b5271d5a3b62af2c6b1271f4ececc3b59de", size = 175166, upload-time = "2026-04-28T08:38:24.467Z" },
-    { url = "https://files.pythonhosted.org/packages/4c/4d/5418649397b477ae08839564c97596ede5ef36523147899bb913bbe959d1/plum_dispatch-2.9.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:d39b20a1af776a39e4a0833e97c6258d938e5d874c7f3537bb7d772c39718c1e", size = 205988, upload-time = "2026-04-28T08:38:25.838Z" },
-    { url = "https://files.pythonhosted.org/packages/e1/a5/28a6c4e45c4465a6e1a30d65206e913c217690752dc3c9261d78a9187aed/plum_dispatch-2.9.0-cp312-cp312-win_amd64.whl", hash = "sha256:beb9b92c6994404a0d2dc83c857263f5da49519575e5cbb8a13060652746c44c", size = 152563, upload-time = "2026-04-28T08:38:27.37Z" },
-    { url = "https://files.pythonhosted.org/packages/cb/18/19e01dbbaececb75815abb37bc71e10d87a7561829b4eae47ec3b342c94f/plum_dispatch-2.9.0-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:78987caf558fbdd675a7a4a5c144069f1f9524610195123fb7d0f0234d0af01a", size = 174490, upload-time = "2026-04-28T08:38:28.881Z" },
-    { url = "https://files.pythonhosted.org/packages/fc/29/7b3de57cd86430fd00d71bc5a8a078bf2c63d4ada7fdfb30853fe976a19f/plum_dispatch-2.9.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:36662d76ae6d87aaa041fade036d2242f0b88b68c9fb4c96b7ba0026320065d3", size = 204734, upload-time = "2026-04-28T08:38:30.398Z" },
-    { url = "https://files.pythonhosted.org/packages/ba/98/23d19326af0da251bb98a39f517ab6da983e5aad5eb9cc398b60933df2cc/plum_dispatch-2.9.0-cp313-cp313-win_amd64.whl", hash = "sha256:a0d16daf09482a6588025e9f133a338d99474e8dd3c3dbbc4c5282a4fffe5a0e", size = 152624, upload-time = "2026-04-28T08:38:31.886Z" },
-    { url = "https://files.pythonhosted.org/packages/64/a7/ee4d01d26032b060d379f44a29124180f756d907e3840d3bc450f8a0d2a7/plum_dispatch-2.9.0-py3-none-any.whl", hash = "sha256:5a516cdac5460343937a2b813562ac00b0eeac973ac023916e538610bdf34397", size = 45328, upload-time = "2026-04-28T08:38:33.022Z" },
+    { url = "https://files.pythonhosted.org/packages/a5/27/93cb6644b2b3f7d6b7083ea229e940910fc8a528209ac9a0a80aad99dc56/plum_dispatch-2.10.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:87bc118922cde767b51f7815a7a338d055500bff85fc90dc0ea8b94fd01b18de", size = 284619, upload-time = "2026-09-03T13:26:22.153Z" },
+    { url = "https://files.pythonhosted.org/packages/91/74/9b57ceecea9afc7a1fe441471074cf5e4b226b92f41be736e00aa6a97e33/plum_dispatch-2.10.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:da8ae39bbae990b96242ec93d263a51e80df5a4e8a41c5c77b7482ea1ac66942", size = 336650, upload-time = "2026-09-03T13:26:23.803Z" },
+    { url = "https://files.pythonhosted.org/packages/27/1d/c8ad6fd807e0e5f5d3e2a6a796c6d555e955c6f67b4fbdce1eeabfd93448/plum_dispatch-2.10.0-cp310-cp310-win_amd64.whl", hash = "sha256:411528c45263bbf65a0a59ea4fbf1691112cb625903974deb13ec7afd5ab69cc", size = 242726, upload-time = "2026-09-03T13:26:25.154Z" },
+    { url = "https://files.pythonhosted.org/packages/ad/d9/6927bacd5809585c2c9b0e84194dfcadf91e6a27f0f90590b51b4aa8507c/plum_dispatch-2.10.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:053cb6949b99b14d2d6b7935b545a2c73079f596a8ee21033e870379392bced4", size = 279947, upload-time = "2026-09-03T13:26:26.743Z" },
+    { url = "https://files.pythonhosted.org/packages/58/3b/7137018e8f037301c483102e60149e08183de03295e703961a058e834e62/plum_dispatch-2.10.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:1383d84a97dfb2f97bf5ddd8d7a50479ce4ad9f9c5cfad7c6d7406a60487c25d", size = 329303, upload-time = "2026-09-03T13:26:28.221Z" },
+    { url = "https://files.pythonhosted.org/packages/63/b2/7c53a02ca978181173d0edcbc44b913a42938815872d3008178bc4afbea8/plum_dispatch-2.10.0-cp311-cp311-win_amd64.whl", hash = "sha256:56c80a8395d09e69fae9ef9cd1d4fb257f284b8da7fe09e20477d5e2080075cd", size = 242597, upload-time = "2026-09-03T13:26:29.861Z" },
+    { url = "https://files.pythonhosted.org/packages/fa/7e/f012112cc9d2559632c87dfccfc521e67d607d6e9bde5eeb974ff09d1fc6/plum_dispatch-2.10.0-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:42aa57a828bda338da137c69c3e6b52c2efd8a4bbca601ecbdbf89c6e0e64e0d", size = 286091, upload-time = "2026-09-03T13:26:31.37Z" },
+    { url = "https://files.pythonhosted.org/packages/a7/6e/2e96ad53bde141f81f29fb71afe3828ada3dc66b66fbb2427fff6cfc9ccd/plum_dispatch-2.10.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:19d5451fa5e1ea03d2f1c7c0a68a7c13f913ac766610bd4a29bbb6d5792275f0", size = 335465, upload-time = "2026-09-03T13:26:32.783Z" },
+    { url = "https://files.pythonhosted.org/packages/4d/d2/51d61ba5a98212a764a1eafad7b103f4e5c062928914dbdc9b164a744eeb/plum_dispatch-2.10.0-cp312-cp312-win_amd64.whl", hash = "sha256:ec275cd92a754ced95748ef05238af1bad3adbf693e47dd71e439e8bec5a6717", size = 245129, upload-time = "2026-09-03T13:26:34.314Z" },
+    { url = "https://files.pythonhosted.org/packages/16/df/e5f3f296aef568aa8c627d7b66097fe3d41109bacd7a38029f3d8683c052/plum_dispatch-2.10.0-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:d56c5cbd2156177f3d04a33b9838693b14ad8ff48c9c0e96d2b0d2ae18b6d995", size = 284513, upload-time = "2026-09-03T13:26:35.72Z" },
+    { url = "https://files.pythonhosted.org/packages/83/ee/acb2c8e7a8c894026666d5bec3cb776ee8a7315f1db6e3aaa0f95b60a75b/plum_dispatch-2.10.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:346b77d680d52c2eedd375ed1eb49edaa07931e98ad89b83bc4c16363c98a661", size = 334033, upload-time = "2026-09-03T13:26:37.158Z" },
+    { url = "https://files.pythonhosted.org/packages/14/bb/e384aca55ffcfd389679b2c8684fc0f333bb59c3d5a3eae99f4e596db979/plum_dispatch-2.10.0-cp313-cp313-win_amd64.whl", hash = "sha256:e4f0025a9ed36062688fbeec693cadd572c060ce051c89f65815b53ca4b59186", size = 245983, upload-time = "2026-09-03T13:26:38.92Z" },
+    { url = "https://files.pythonhosted.org/packages/ee/05/0f30609bdac313902ae604b4d1ef7b22b31e7e53bab5e4679ab951c1250e/plum_dispatch-2.10.0-py3-none-any.whl", hash = "sha256:0a9d0d7d40e37f69c4995fb52458b9b904d75562cb3a937d512ed7b8e91fadfe", size = 49004, upload-time = "2026-09-03T13:26:40.467Z" },
 ]
 
 [[package]]
