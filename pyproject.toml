@@ -8,8 +8,8 @@ license = { text = "MIT" }
 authors = [{ name = "Viacheslav Lymanskyi" }]
 keywords = ["jwt", "elegant-objects", "pyjwt"]
 dependencies = [
-    "pyjwt[crypto]==2.13.0",
-    "plum-dispatch==2.10.0",
+    "pyjwt[crypto]>=2.13.0,<3",
+    "plum-dispatch>=2.10.0,<3",
 ]
 
 [dependency-groups]
