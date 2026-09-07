@@ -1,6 +1,7 @@
 # Elegant JWT
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
+[![Downloads](https://static.pepy.tech/badge/elegant-jwt)](https://pepy.tech/projects/elegant-jwt)
 
 JSON Web Tokens in the [Elegant Objects](https://www.elegantobjects.org/) style.
 The library hides `pyjwt` behind small immutable objects: a `Token`, its
