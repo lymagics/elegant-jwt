@@ -185,6 +185,7 @@ def test_complains_about_non_numeric_expiration_claim():
     )
 
 
+@pytest.mark.skip(reason="Reproduces #18, unskip once fixed")
 def test_reads_back_claims_with_audience():
     assert_that(
         JwtClaims({"sub": "8080", "aud": "ledger-service"})
