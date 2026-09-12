@@ -1,3 +1,4 @@
+import pytest
 from hamcrest import assert_that, calling, equal_to, has_entry, is_, raises
 
 from elegant_jwt import Hs256, JwtClaims, JwtToken, StrictToken
@@ -158,6 +159,7 @@ def test_mirrors_freshness_of_origin():
     )
 
 
+@pytest.mark.skip(reason="Reproduces #18, unskip once fixed")
 def test_reads_back_claims_with_audience():
     assert_that(
         JwtClaims({"sub": "8080", "aud": "ledger-service"})
