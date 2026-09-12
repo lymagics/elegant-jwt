@@ -22,6 +22,26 @@ def test_stays_intact_after_mutation_of_json():
     )
 
 
+def test_stays_intact_after_mutation_of_nested_list_in_json():
+    claims = JwtClaims({"sub": "3", "roles": ["viewer"]})
+    claims.json()["roles"].append("root")
+    assert_that(
+        claims.json(),
+        equal_to({"sub": "3", "roles": ["viewer"]}),
+        "Claims must hand out a copy whose nested lists are independent",
+    )
+
+
+def test_stays_intact_after_mutation_of_nested_dict_in_json():
+    claims = JwtClaims({"sub": "19", "scope": {"read": {"docs": True}}})
+    claims.json()["scope"]["read"]["docs"] = False
+    assert_that(
+        claims.json(),
+        equal_to({"sub": "19", "scope": {"read": {"docs": True}}}),
+        "Claims must hand out a copy whose nested dicts are independent",
+    )
+
+
 def test_builds_token_through_signature():
     assert_that(
         JwtClaims({"sub": "4021"})

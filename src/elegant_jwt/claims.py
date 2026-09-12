@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from copy import deepcopy
 from typing import TYPE_CHECKING
 
 from plum import dispatch
@@ -30,7 +31,7 @@ class JwtClaims(Claims):
         return JwtToken(signature.encoded(self.json()), signature)
 
     def json(self) -> dict:
-        return dict(self.payload)
+        return deepcopy(self.payload)
 
 
 class ExpiringClaims(Claims):
