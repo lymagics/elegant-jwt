@@ -14,6 +14,7 @@ The library hides `pyjwt` behind small immutable objects: a `Token`, its
 - [Tokens That Expire](#tokens-that-expire)
 - [Refusing Expired Tokens](#refusing-expired-tokens)
 - [Stamping the Issuer](#stamping-the-issuer)
+- [Tokens Valid Only Later](#tokens-valid-only-later)
 - [Asymmetric Algorithms](#asymmetric-algorithms)
 - [Testing Without Waiting](#testing-without-waiting)
 - [Your Own Signature](#your-own-signature)
@@ -109,6 +110,20 @@ print(token.claims().json())
 # => {"sub": "42", "exp": 1788094023, "iat": 1788090423, "iss": "my-service"}
 ```
 
+## Tokens Valid Only Later
+
+`NotBeforeClaims` adds an `nbf` (not before) claim. The delay is in seconds
+from now; `pyjwt` refuses the token until that moment arrives:
+
+```python
+from elegant_jwt import Hs256, JwtClaims, JwtToken, NotBeforeClaims
+
+signature = Hs256("a-secret-of-at-least-thirty-two-bytes!")
+raw = NotBeforeClaims(JwtClaims({"sub": "42"}), 300).token(signature).value()
+
+JwtToken(raw, signature).claims()  # raises Exception for the next five minutes
+```
+
 ## Asymmetric Algorithms
 
 `Rs256` and `Es256` sign with a private key and verify with a public key,
@@ -184,7 +199,8 @@ except Exception as trouble:
 
 - Every class is immutable; a change produces a new object.
 - New behavior comes from decorators (`StrictToken`, `ExpiringClaims`,
-  `IssuedClaims`), not from modification of existing classes.
+  `IssuedClaims`, `NotBeforeClaims`), not from modification of existing
+  classes.
 - The library performs no network and no filesystem access.
 
 ## Development
