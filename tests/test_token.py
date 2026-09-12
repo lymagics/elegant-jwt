@@ -156,3 +156,27 @@ def test_mirrors_freshness_of_origin():
         is_(False),
         "Strict token must mirror the freshness of its origin",
     )
+
+
+def test_complains_in_user_words_about_validity_of_invalid_token():
+    assert_that(
+        calling(
+            JwtToken("t.o.rn", BrokenSignature("torn seal"), FakeClock(77)).validity
+        ),
+        raises(Exception, "The access token is not valid"),
+        "Token must complain in user words when validity decoding fails",
+    )
+
+
+def test_complains_about_non_numeric_expiration_claim():
+    assert_that(
+        calling(
+            JwtToken(
+                "w.o.rdy",
+                FakeSignature("w.o.rdy", {"exp": "tomorrow-ish"}),
+                FakeClock(4040),
+            ).validity
+        ),
+        raises(Exception, "expiration claim"),
+        "Token must complain when the expiration claim is not a number",
+    )
