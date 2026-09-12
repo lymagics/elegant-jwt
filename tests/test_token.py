@@ -1,6 +1,7 @@
-from hamcrest import assert_that, calling, equal_to, is_, raises
+import pytest
+from hamcrest import assert_that, calling, equal_to, has_entry, is_, raises
 
-from elegant_jwt import JwtToken, StrictToken
+from elegant_jwt import Hs256, JwtClaims, JwtToken, StrictToken
 from tests.fakes import BrokenSignature, FakeClock, FakeSignature
 
 
@@ -155,4 +156,16 @@ def test_mirrors_freshness_of_origin():
         ).expired(),
         is_(False),
         "Strict token must mirror the freshness of its origin",
+    )
+
+
+@pytest.mark.skip(reason="Reproduces #18, unskip once fixed")
+def test_reads_back_claims_with_audience():
+    assert_that(
+        JwtClaims({"sub": "8080", "aud": "ledger-service"})
+        .token(Hs256("audience-secret-stretching-beyond-thirty-two-bytes"))
+        .claims()
+        .json(),
+        has_entry("aud", "ledger-service"),
+        "Token must read back a payload that carries an audience claim",
     )
