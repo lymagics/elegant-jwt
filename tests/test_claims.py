@@ -1,6 +1,6 @@
 from hamcrest import assert_that, equal_to, greater_than, has_entries, has_entry
 
-from elegant_jwt import ExpiringClaims, IssuedClaims, JwtClaims
+from elegant_jwt import ExpiringClaims, IssuedClaims, JwtClaims, NotBeforeClaims
 from tests.fakes import FakeClock, FakeSignature
 
 
@@ -81,6 +81,50 @@ def test_builds_issued_token_through_signature():
         .value(),
         equal_to("xx.yy.zz"),
         "Issued claims must still build a token through the signature",
+    )
+
+
+def test_adds_not_before_on_top_of_origin():
+    assert_that(
+        NotBeforeClaims(
+            JwtClaims({"sub": "913"}), 3599, FakeClock(1_700_000_001)
+        ).json(),
+        equal_to({"sub": "913", "nbf": 1_700_003_600}),
+        "Not-before claims must append the clock moment plus the delay",
+    )
+
+
+def test_adds_not_before_with_system_clock_by_default():
+    assert_that(
+        NotBeforeClaims(JwtClaims({}), 0).json(),
+        has_entry("nbf", greater_than(1_000_000_000)),
+        "Not-before claims must fall back to the system clock",
+    )
+
+
+def test_builds_not_before_token_through_signature():
+    assert_that(
+        NotBeforeClaims(JwtClaims({"sub": "27"}), 1, FakeClock(65535))
+        .token(FakeSignature("h.p.s", {"sub": "27", "nbf": 65536}))
+        .value(),
+        equal_to("h.p.s"),
+        "Not-before claims must still build a token through the signature",
+    )
+
+
+def test_stacks_not_before_with_other_decorators():
+    assert_that(
+        NotBeforeClaims(
+            IssuedClaims(
+                ExpiringClaims(JwtClaims({"sub": "808"}), 120, FakeClock(31337)),
+                "globex",
+                FakeClock(31337),
+            ),
+            45,
+            FakeClock(31337),
+        ).json(),
+        has_entries(sub="808", exp=31457, iat=31337, iss="globex", nbf=31382),
+        "Not-before claims must merge with the claims of stacked decorators",
     )
 
 

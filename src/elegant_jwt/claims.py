@@ -51,6 +51,24 @@ class ExpiringClaims(Claims):
         return {**self.origin.json(), "exp": self.clock.moment() + self.lifetime}
 
 
+class NotBeforeClaims(Claims):
+    @dispatch
+    def __init__(self, origin: Claims, delay: int):
+        self.__init__(origin, delay, SystemClock())
+
+    @dispatch
+    def __init__(self, origin: Claims, delay: int, clock: Clock):
+        self.origin = origin
+        self.delay = delay
+        self.clock = clock
+
+    def token(self, signature: Signature) -> "Token":
+        return JwtClaims(self.json()).token(signature)
+
+    def json(self) -> dict:
+        return {**self.origin.json(), "nbf": self.clock.moment() + self.delay}
+
+
 class IssuedClaims(Claims):
     @dispatch
     def __init__(self, origin: Claims, issuer: str):
