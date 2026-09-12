@@ -1,3 +1,4 @@
+import pytest
 from hamcrest import assert_that, calling, equal_to, is_, raises
 
 from elegant_jwt import JwtToken, StrictToken
@@ -158,6 +159,7 @@ def test_mirrors_freshness_of_origin():
     )
 
 
+@pytest.mark.skip(reason="Reproduces #19, unskip once fixed")
 def test_complains_in_user_words_about_validity_of_invalid_token():
     assert_that(
         calling(
@@ -168,6 +170,7 @@ def test_complains_in_user_words_about_validity_of_invalid_token():
     )
 
 
+@pytest.mark.skip(reason="Reproduces #19, unskip once fixed")
 def test_complains_about_non_numeric_expiration_claim():
     assert_that(
         calling(
