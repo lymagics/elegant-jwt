@@ -1,7 +1,7 @@
 import pytest
-from hamcrest import assert_that, calling, equal_to, is_, raises
+from hamcrest import assert_that, calling, equal_to, has_entry, is_, raises
 
-from elegant_jwt import JwtToken, StrictToken
+from elegant_jwt import Hs256, JwtClaims, JwtToken, StrictToken
 from tests.fakes import BrokenSignature, FakeClock, FakeSignature
 
 
@@ -182,4 +182,15 @@ def test_complains_about_non_numeric_expiration_claim():
         ),
         raises(Exception, "expiration claim"),
         "Token must complain when the expiration claim is not a number",
+    )
+
+
+def test_reads_back_claims_with_audience():
+    assert_that(
+        JwtClaims({"sub": "8080", "aud": "ledger-service"})
+        .token(Hs256("audience-secret-stretching-beyond-thirty-two-bytes"))
+        .claims()
+        .json(),
+        has_entry("aud", "ledger-service"),
+        "Token must read back a payload that carries an audience claim",
     )
