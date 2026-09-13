@@ -21,6 +21,7 @@ The library hides `pyjwt` behind small immutable objects: a `Token`, its
 - [Errors](#errors)
 - [Design](#design)
 - [Development](#development)
+- [How to Report Issues](#how-to-report-issues)
 
 ## Installation
 
@@ -211,3 +212,29 @@ make black    # formatting
 make flake8   # style
 make ruff     # lint
 ```
+
+## How to Report Issues
+
+Three rules, depending on what you found.
+
+**Enhancements.** Open a GitHub issue and label it `enhancement`. Describe the
+desired behaviour and why it is useful; no code is required.
+
+**Bugs in code.** Open a pull request, not an issue. The PR must contain a
+test that reproduces the bug and fails against the current code. Mark the
+test as disabled with `pytest.mark.skip` and a short reason, so CI stays green
+while the failing case is on record:
+
+```python
+@pytest.mark.skip(reason="Reproduces #99, not fixed yet")
+def test_keeps_claims_of_token_without_expiration():
+    ...
+```
+
+The fix can arrive in the same PR or in a follow-up one, which removes the
+skip. Contributors without push rights fork the repository first.
+
+**Bugs outside code.** If the bug cannot be reproduced with a test
+(documentation, packaging, CI configuration, and so on), open a GitHub issue
+and label it `bug`. Describe the expected and actual behaviour and how to
+observe it.
