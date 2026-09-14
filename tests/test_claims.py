@@ -1,7 +1,15 @@
-from hamcrest import assert_that, equal_to, greater_than, has_entries, has_entry
+from hamcrest import (
+    assert_that,
+    calling,
+    equal_to,
+    greater_than,
+    has_entries,
+    has_entry,
+    raises,
+)
 
 from elegant_jwt import ExpiringClaims, IssuedClaims, JwtClaims, NotBeforeClaims
-from tests.fakes import FakeClock, FakeSignature
+from tests.fakes import BrokenSignature, FakeClock, FakeSignature
 
 
 def test_returns_payload_as_json():
@@ -49,6 +57,16 @@ def test_builds_token_through_signature():
         .value(),
         equal_to("head.body.seal"),
         "Claims must build a token from the string the signature encoded",
+    )
+
+
+def test_complains_in_user_words_when_signing_fails():
+    assert_that(
+        calling(JwtClaims({"sub": "6600"}).token).with_args(
+            BrokenSignature("snapped quill")
+        ),
+        raises(Exception, "The claims could not be signed"),
+        "Claims must complain in user words when the signature cannot encode them",
     )
 
 
