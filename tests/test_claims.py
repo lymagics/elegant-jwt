@@ -1,4 +1,3 @@
-import pytest
 from hamcrest import (
     assert_that,
     calling,
@@ -61,12 +60,6 @@ def test_builds_token_through_signature():
     )
 
 
-@pytest.mark.skip(
-    reason="Bug: JwtClaims.token() leaks raw signature errors, "
-    "see https://github.com/lymagics/elegant-jwt/pull/30"
-)
-# TODO: Bug: JwtClaims.token() leaks raw signature errors,
-# see https://github.com/lymagics/elegant-jwt/pull/30
 def test_complains_in_user_words_when_signing_fails():
     assert_that(
         calling(JwtClaims({"sub": "6600"}).token).with_args(

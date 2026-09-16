@@ -28,7 +28,10 @@ class JwtClaims(Claims):
     def token(self, signature: Signature) -> "Token":
         from elegant_jwt.token import JwtToken
 
-        return JwtToken(signature.encoded(self.json()), signature)
+        try:
+            return JwtToken(signature.encoded(self.json()), signature)
+        except Exception as cause:
+            raise Exception("The claims could not be signed.") from cause
 
     def json(self) -> dict:
         return deepcopy(self.payload)
