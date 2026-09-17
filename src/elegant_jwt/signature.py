@@ -46,3 +46,21 @@ class Es256(Signature):
 
     def decoded(self, raw: str, options: dict) -> dict:
         return jwt.decode(raw, self.public_key, algorithms=["ES256"], options=options)
+
+
+class AudienceSignature(Signature):
+    def __init__(self, origin: Signature, audience: str):
+        self.origin = origin
+        self.audience = audience
+
+    def encoded(self, payload: dict) -> str:
+        return self.origin.encoded(payload)
+
+    def decoded(self, raw: str, options: dict) -> dict:
+        payload = self.origin.decoded(raw, {**options, "verify_aud": False})
+        jwt.decode(
+            raw,
+            options={"verify_signature": False, "verify_aud": True},
+            audience=self.audience,
+        )
+        return payload

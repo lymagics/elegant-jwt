@@ -1,10 +1,11 @@
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
-from hamcrest import assert_that, calling, equal_to, raises
+from hamcrest import assert_that, calling, equal_to, has_entry, raises
 from hypothesis import given
 from hypothesis import strategies as st
 
-from elegant_jwt import Es256, Hs256, Rs256
+from elegant_jwt import AudienceSignature, Es256, Hs256, Rs256
+from tests.fakes import FakeSignature
 
 
 @given(
@@ -126,4 +127,113 @@ def test_restores_payload_signed_with_elliptic_curve():
         Es256(pem, pub).decoded(Es256(pem, pub).encoded({"sub": "1066"}), {}),
         equal_to({"sub": "1066"}),
         "ES256 must restore the payload it signed with the private key",
+    )
+
+
+def test_restores_payload_meant_for_its_audience():
+    assert_that(
+        AudienceSignature(
+            Hs256("billing-secret-stretching-beyond-thirty-two-bytes"), "billing"
+        ).decoded(
+            Hs256("billing-secret-stretching-beyond-thirty-two-bytes").encoded(
+                {"sub": "2718", "aud": "billing"}
+            ),
+            {},
+        ),
+        equal_to({"sub": "2718", "aud": "billing"}),
+        "Audience signature must restore a payload addressed to its audience",
+    )
+
+
+def test_restores_payload_listing_its_audience_among_others():
+    assert_that(
+        AudienceSignature(
+            Hs256("crowd-secret-stretching-beyond-thirty-two-bytes!"), "search"
+        ).decoded(
+            Hs256("crowd-secret-stretching-beyond-thirty-two-bytes!").encoded(
+                {"sub": "1618", "aud": ["mail", "search", "calendar"]}
+            ),
+            {},
+        ),
+        has_entry("aud", ["mail", "search", "calendar"]),
+        "Audience signature must accept a payload that lists its audience",
+    )
+
+
+def test_rejects_payload_meant_for_another_audience():
+    assert_that(
+        calling(
+            AudienceSignature(
+                Hs256("stranger-secret-stretching-beyond-thirty-two-bytes"),
+                "warehouse",
+            ).decoded
+        ).with_args(
+            Hs256("stranger-secret-stretching-beyond-thirty-two-bytes").encoded(
+                {"sub": "1414", "aud": "storefront"}
+            ),
+            {},
+        ),
+        raises(Exception, "Audience"),
+        "Audience signature must refuse a payload addressed to someone else",
+    )
+
+
+def test_rejects_payload_without_audience_claim():
+    assert_that(
+        calling(
+            AudienceSignature(
+                Hs256("nameless-secret-stretching-beyond-thirty-two-bytes"),
+                "gateway",
+            ).decoded
+        ).with_args(
+            Hs256("nameless-secret-stretching-beyond-thirty-two-bytes").encoded(
+                {"sub": "3141"}
+            ),
+            {},
+        ),
+        raises(Exception, "aud"),
+        "Audience signature must refuse a payload that names no audience",
+    )
+
+
+def test_rejects_forged_token_before_looking_at_audience():
+    assert_that(
+        calling(
+            AudienceSignature(
+                Hs256("genuine-secret-stretching-beyond-thirty-two-bytes"),
+                "vault",
+            ).decoded
+        ).with_args(
+            Hs256("forged-secret-stretching-beyond-thirty-two-bytes!").encoded(
+                {"sub": "1729", "aud": "vault"}
+            ),
+            {},
+        ),
+        raises(Exception, "Signature"),
+        "Audience signature must still refuse a token signed with another secret",
+    )
+
+
+def test_forwards_decode_options_to_origin():
+    assert_that(
+        AudienceSignature(
+            Hs256("bygone-secret-stretching-beyond-thirty-two-bytes"), "archive"
+        ).decoded(
+            Hs256("bygone-secret-stretching-beyond-thirty-two-bytes").encoded(
+                {"aud": "archive", "exp": 1}
+            ),
+            {"verify_exp": False},
+        ),
+        has_entry("exp", 1),
+        "Audience signature must pass the decode options on to its origin",
+    )
+
+
+def test_encodes_through_origin():
+    assert_that(
+        AudienceSignature(
+            FakeSignature("aud.ien.ce", {"sub": "6174"}), "printing-press"
+        ).encoded({"sub": "6174"}),
+        equal_to("aud.ien.ce"),
+        "Audience signature must leave encoding to its origin",
     )

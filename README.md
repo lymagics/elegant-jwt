@@ -15,6 +15,7 @@ The library hides `pyjwt` behind small immutable objects: a `Token`, its
 - [Refusing Expired Tokens](#refusing-expired-tokens)
 - [Stamping the Issuer](#stamping-the-issuer)
 - [Tokens Valid Only Later](#tokens-valid-only-later)
+- [Tokens for One Audience](#tokens-for-one-audience)
 - [Asymmetric Algorithms](#asymmetric-algorithms)
 - [Testing Without Waiting](#testing-without-waiting)
 - [Your Own Signature](#your-own-signature)
@@ -125,6 +126,29 @@ raw = NotBeforeClaims(JwtClaims({"sub": "42"}), 300).token(signature).value()
 JwtToken(raw, signature).claims()  # raises Exception for the next five minutes
 ```
 
+## Tokens for One Audience
+
+A token that carries an `aud` (audience) claim is read back through
+`AudienceSignature`, a decorator that names the audience the reader expects.
+It refuses tokens addressed to anyone else, and tokens with no audience at
+all:
+
+```python
+from elegant_jwt import AudienceSignature, Hs256, JwtClaims, JwtToken
+
+signature = AudienceSignature(
+    Hs256("a-secret-of-at-least-thirty-two-bytes!"),
+    "ledger-service",
+)
+raw = JwtClaims({"sub": "42", "aud": "ledger-service"}).token(signature).value()
+
+print(JwtToken(raw, signature).claims().json())
+# => {"sub": "42", "aud": "ledger-service"}
+```
+
+The `aud` claim may also be a list; the token is accepted when the expected
+audience is one of its entries.
+
 ## Asymmetric Algorithms
 
 `Rs256` and `Es256` sign with a private key and verify with a public key,
@@ -200,8 +224,8 @@ except Exception as trouble:
 
 - Every class is immutable; a change produces a new object.
 - New behavior comes from decorators (`StrictToken`, `ExpiringClaims`,
-  `IssuedClaims`, `NotBeforeClaims`), not from modification of existing
-  classes.
+  `IssuedClaims`, `NotBeforeClaims`, `AudienceSignature`), not from
+  modification of existing classes.
 - The library performs no network and no filesystem access.
 
 ## Development
