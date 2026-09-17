@@ -46,11 +46,16 @@ class JwtToken(Token):
         return self.validity() == 0
 
     def validity(self) -> int:
-        payload = self.signature.decoded(self.raw, {"verify_exp": False})
+        try:
+            payload = self.signature.decoded(self.raw, {"verify_exp": False})
+        except Exception as cause:
+            raise Exception("The access token is not valid.") from cause
         try:
             expiration = int(payload["exp"])
         except KeyError as cause:
             raise Exception("The token has no expiration claim.") from cause
+        except (TypeError, ValueError) as cause:
+            raise Exception("The expiration claim is not a number.") from cause
         return max(0, expiration - self.clock.moment())
 
     def value(self) -> str:
