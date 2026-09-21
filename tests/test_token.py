@@ -185,11 +185,11 @@ def test_complains_about_non_numeric_expiration_claim():
 
 # TODO: Bug: claims() ignores the injected Clock and checks expiration against
 # real wall-clock time, so a token that expired() calls fresh can still fail
-# claims(). See (PR link pending)
+# claims(). See https://github.com/lymagics/elegant-jwt/pull/38
 @pytest.mark.skip(
     reason="Bug: claims() ignores the injected Clock and checks expiration "
     "against real wall-clock time, so a token that expired() calls fresh can "
-    "still fail claims(). See (PR link pending)"
+    "still fail claims(). See https://github.com/lymagics/elegant-jwt/pull/38"
 )
 def test_agrees_with_expired_when_reading_claims_under_a_frozen_clock():
     signature = Hs256("frostbitten-secret-stretching-beyond-thirty-two-bytes")
