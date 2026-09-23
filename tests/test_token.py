@@ -1,4 +1,3 @@
-import pytest
 from hamcrest import assert_that, calling, equal_to, has_entry, is_, raises
 
 from elegant_jwt import AudienceSignature, Hs256, JwtClaims, JwtToken, StrictToken
@@ -183,14 +182,6 @@ def test_complains_about_non_numeric_expiration_claim():
     )
 
 
-# TODO: Bug: claims() ignores the injected Clock and checks expiration against
-# real wall-clock time, so a token that expired() calls fresh can still fail
-# claims(). See https://github.com/lymagics/elegant-jwt/pull/38
-@pytest.mark.skip(
-    reason="Bug: claims() ignores the injected Clock and checks expiration "
-    "against real wall-clock time, so a token that expired() calls fresh can "
-    "still fail claims(). See https://github.com/lymagics/elegant-jwt/pull/38"
-)
 def test_agrees_with_expired_when_reading_claims_under_a_frozen_clock():
     signature = Hs256("frostbitten-secret-stretching-beyond-thirty-two-bytes")
     raw = signature.encoded({"sub": "70117", "exp": 100})
@@ -199,6 +190,20 @@ def test_agrees_with_expired_when_reading_claims_under_a_frozen_clock():
         equal_to({"sub": "70117", "exp": 100}),
         "Token must honor its injected clock, not real time, when reading "
         "claims of a token its own expired() still calls fresh",
+    )
+
+
+def test_refuses_claims_once_its_own_clock_passes_expiration():
+    assert_that(
+        calling(
+            JwtToken(
+                "st.a.le",
+                FakeSignature("st.a.le", {"sub": "3131", "exp": 2000}),
+                FakeClock(2000),
+            ).claims
+        ),
+        raises(Exception, "expired"),
+        "Token must refuse claims once its injected clock reaches expiration",
     )
 
 
