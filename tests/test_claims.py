@@ -5,10 +5,18 @@ from hamcrest import (
     greater_than,
     has_entries,
     has_entry,
+    is_not,
+    matches_regexp,
     raises,
 )
 
-from elegant_jwt import ExpiringClaims, IssuedClaims, JwtClaims, NotBeforeClaims
+from elegant_jwt import (
+    ExpiringClaims,
+    IssuedClaims,
+    JtiClaims,
+    JwtClaims,
+    NotBeforeClaims,
+)
 from tests.fakes import BrokenSignature, FakeClock, FakeSignature
 
 
@@ -163,6 +171,60 @@ def test_stacks_not_before_with_other_decorators():
         ).json(),
         has_entries(sub="808", exp=31457, iat=31337, iss="globex", nbf=31382),
         "Not-before claims must merge with the claims of stacked decorators",
+    )
+
+
+def test_adds_identity_on_top_of_origin():
+    assert_that(
+        JtiClaims(JwtClaims({"sub": "1024"}), "ticket-0x7f").json(),
+        equal_to({"sub": "1024", "jti": "ticket-0x7f"}),
+        "Jti claims must append the identity they were given",
+    )
+
+
+def test_adds_uuid_identity_by_default():
+    assert_that(
+        JtiClaims(JwtClaims({})).json(),
+        has_entry(
+            "jti",
+            matches_regexp(
+                "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            ),
+        ),
+        "Jti claims must fall back to a random version 4 UUID",
+    )
+
+
+def test_gives_each_object_its_own_identity_by_default():
+    assert_that(
+        JtiClaims(JwtClaims({"sub": "2048"})).json()["jti"],
+        is_not(equal_to(JtiClaims(JwtClaims({"sub": "2048"})).json()["jti"])),
+        "Two jti claims built without an identity must not share one",
+    )
+
+
+def test_builds_identified_token_through_signature():
+    assert_that(
+        JtiClaims(JwtClaims({"sub": "4096"}), "nonce-9")
+        .token(FakeSignature("id.en.tity", {"sub": "4096", "jti": "nonce-9"}))
+        .value(),
+        equal_to("id.en.tity"),
+        "Jti claims must still build a token through the signature",
+    )
+
+
+def test_stacks_identity_with_other_decorators():
+    assert_that(
+        JtiClaims(
+            IssuedClaims(
+                ExpiringClaims(JwtClaims({"sub": "8192"}), 600, FakeClock(123456)),
+                "hooli",
+                FakeClock(123456),
+            ),
+            "one-shot-77",
+        ).json(),
+        has_entries(sub="8192", exp=124056, iat=123456, iss="hooli", jti="one-shot-77"),
+        "Jti claims must merge with the claims of stacked decorators",
     )
 
 

@@ -15,6 +15,7 @@ The library hides `pyjwt` behind small immutable objects: a `Token`, its
 - [Refusing Expired Tokens](#refusing-expired-tokens)
 - [Stamping the Issuer](#stamping-the-issuer)
 - [Tokens Valid Only Later](#tokens-valid-only-later)
+- [Tokens With a Unique ID](#tokens-with-a-unique-id)
 - [Tokens for One Audience](#tokens-for-one-audience)
 - [Asymmetric Algorithms](#asymmetric-algorithms)
 - [Testing Without Waiting](#testing-without-waiting)
@@ -126,6 +127,31 @@ raw = NotBeforeClaims(JwtClaims({"sub": "42"}), 300).token(signature).value()
 JwtToken(raw, signature).claims()  # raises Exception for the next five minutes
 ```
 
+## Tokens With a Unique ID
+
+`JtiClaims` adds a `jti` (JWT ID) claim, the key a service uses for a
+revocation list or a one-time-use record. By default the ID is a random
+version 4 UUID:
+
+```python
+from elegant_jwt import Hs256, JtiClaims, JwtClaims
+
+token = JtiClaims(JwtClaims({"sub": "42"})).token(
+    Hs256("a-secret-of-at-least-thirty-two-bytes!")
+)
+
+print(token.claims().json())
+# => {"sub": "42", "jti": "b3f2c1d4-8a6e-4f0b-9c1d-2e3f4a5b6c7d"}
+```
+
+Each `JtiClaims` object carries one ID; build a new object for every token
+that needs its own. To use an ID of your own, pass it as the second
+argument:
+
+```python
+claims = JtiClaims(JwtClaims({"sub": "42"}), "order-7781-refund")
+```
+
 ## Tokens for One Audience
 
 A token that carries an `aud` (audience) claim is read back through
@@ -224,7 +250,7 @@ except Exception as trouble:
 
 - Every class is immutable; a change produces a new object.
 - New behavior comes from decorators (`StrictToken`, `ExpiringClaims`,
-  `IssuedClaims`, `NotBeforeClaims`, `AudienceSignature`), not from
+  `IssuedClaims`, `NotBeforeClaims`, `JtiClaims`, `AudienceSignature`), not from
   modification of existing classes.
 - The library performs no network and no filesystem access.
 
