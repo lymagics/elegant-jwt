@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from copy import deepcopy
 from typing import TYPE_CHECKING
+from uuid import uuid4
 
 from plum import dispatch
 
@@ -93,3 +94,20 @@ class IssuedClaims(Claims):
             "iat": self.clock.moment(),
             "iss": self.issuer,
         }
+
+
+class JtiClaims(Claims):
+    @dispatch
+    def __init__(self, origin: Claims):
+        self.__init__(origin, str(uuid4()))
+
+    @dispatch
+    def __init__(self, origin: Claims, identity: str):
+        self.origin = origin
+        self.identity = identity
+
+    def token(self, signature: Signature) -> "Token":
+        return JwtClaims(self.json()).token(signature)
+
+    def json(self) -> dict:
+        return {**self.origin.json(), "jti": self.identity}

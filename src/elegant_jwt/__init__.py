@@ -2,6 +2,7 @@ from elegant_jwt.claims import (
     Claims,
     ExpiringClaims,
     IssuedClaims,
+    JtiClaims,
     JwtClaims,
     NotBeforeClaims,
 )
@@ -17,6 +18,7 @@ __all__ = [
     "ExpiringClaims",
     "Hs256",
     "IssuedClaims",
+    "JtiClaims",
     "JwtClaims",
     "JwtToken",
     "NotBeforeClaims",
