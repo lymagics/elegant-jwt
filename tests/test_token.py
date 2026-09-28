@@ -1,6 +1,22 @@
-from hamcrest import assert_that, calling, equal_to, has_entry, is_, raises
+from hamcrest import (
+    assert_that,
+    calling,
+    equal_to,
+    greater_than,
+    has_entry,
+    is_,
+    raises,
+)
 
-from elegant_jwt import AudienceSignature, Hs256, JwtClaims, JwtToken, StrictToken
+from elegant_jwt import (
+    AudienceSignature,
+    ExpiringClaims,
+    Hs256,
+    JwtClaims,
+    JwtToken,
+    NotBeforeClaims,
+    StrictToken,
+)
 from tests.fakes import BrokenSignature, FakeClock, FakeSignature
 
 
@@ -204,6 +220,23 @@ def test_refuses_claims_once_its_own_clock_passes_expiration():
         ),
         raises(Exception, "expired"),
         "Token must refuse claims once its injected clock reaches expiration",
+    )
+
+
+def test_reports_validity_of_a_token_whose_not_before_moment_is_still_ahead():
+    signature = Hs256("clockwork-secret-stretching-beyond-thirty-two-bytes!")
+    raw = (
+        NotBeforeClaims(
+            ExpiringClaims(JwtClaims({"sub": "70007"}), 86400),
+            9001,
+        )
+        .token(signature)
+        .value()
+    )
+    assert_that(
+        JwtToken(raw, signature).validity(),
+        greater_than(0),
+        "Token must report seconds of validity even before its nbf moment arrives",
     )
 
 
