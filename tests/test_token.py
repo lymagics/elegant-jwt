@@ -1,4 +1,3 @@
-import pytest
 from hamcrest import (
     assert_that,
     calling,
@@ -224,10 +223,6 @@ def test_refuses_claims_once_its_own_clock_passes_expiration():
     )
 
 
-# TODO: Bug: nbf blocks validity()/expired(). See lymagics/elegant-jwt#50
-@pytest.mark.skip(
-    reason="Bug: nbf blocks validity()/expired(). See lymagics/elegant-jwt#50"
-)
 def test_reports_validity_of_a_token_whose_not_before_moment_is_still_ahead():
     signature = Hs256("clockwork-secret-stretching-beyond-thirty-two-bytes!")
     raw = (
@@ -242,6 +237,25 @@ def test_reports_validity_of_a_token_whose_not_before_moment_is_still_ahead():
         JwtToken(raw, signature).validity(),
         greater_than(0),
         "Token must report seconds of validity even before its nbf moment arrives",
+    )
+
+
+def test_refuses_claims_of_a_token_whose_not_before_moment_is_still_ahead():
+    signature = Hs256("premature-secret-stretching-far-beyond-thirty-two!")
+    assert_that(
+        calling(
+            JwtToken(
+                NotBeforeClaims(
+                    ExpiringClaims(JwtClaims({"sub": "4004"}), 7777),
+                    3333,
+                )
+                .token(signature)
+                .value(),
+                signature,
+            ).claims
+        ),
+        raises(Exception, "not valid"),
+        "Token must refuse claims while its nbf moment is still ahead",
     )
 
 

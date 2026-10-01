@@ -37,7 +37,7 @@ class JwtToken(Token):
         self.clock = clock
 
     def claims(self) -> Claims:
-        payload = self._payload()
+        payload = self._payload({"verify_exp": False})
         if "exp" in payload and self._validity(payload) == 0:
             raise Exception("The access token has expired.")
         return JwtClaims(payload)
@@ -46,14 +46,14 @@ class JwtToken(Token):
         return self.validity() == 0
 
     def validity(self) -> int:
-        return self._validity(self._payload())
+        return self._validity(self._payload({"verify_exp": False, "verify_nbf": False}))
 
     def value(self) -> str:
         return self.raw
 
-    def _payload(self) -> dict:
+    def _payload(self, options: dict) -> dict:
         try:
-            return self.signature.decoded(self.raw, {"verify_exp": False})
+            return self.signature.decoded(self.raw, options)
         except Exception as cause:
             raise Exception("The access token is not valid.") from cause
 
