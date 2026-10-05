@@ -273,3 +273,18 @@ def test_reads_back_claims_with_audience():
         has_entry("aud", "ledger-service"),
         "Token must read back a payload that carries an audience claim",
     )
+
+
+def test_reads_claims_once_its_own_clock_passes_not_before_moment():
+    signature = Hs256("horologe-secret-stretching-beyond-thirty-two-bytes!")
+    assert_that(
+        JwtToken(
+            signature.encoded({"sub": "6161", "nbf": 4102444800}),
+            signature,
+            FakeClock(4102444801),
+        )
+        .claims()
+        .json(),
+        equal_to({"sub": "6161", "nbf": 4102444800}),
+        "Token must judge nbf by its injected clock, not by real time",
+    )
