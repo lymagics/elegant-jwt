@@ -1,4 +1,3 @@
-import pytest
 from hamcrest import (
     assert_that,
     calling,
@@ -276,12 +275,6 @@ def test_reads_back_claims_with_audience():
     )
 
 
-# TODO: Bug: claims() judges nbf by real time, not the injected Clock.
-# https://github.com/lymagics/elegant-jwt/pull/57
-@pytest.mark.skip(
-    reason="Bug: claims() judges nbf by real time, not the injected Clock. "
-    "See PR #57 / https://github.com/lymagics/elegant-jwt/pull/57"
-)
 def test_reads_claims_once_its_own_clock_passes_not_before_moment():
     signature = Hs256("horologe-secret-stretching-beyond-thirty-two-bytes!")
     assert_that(
@@ -294,4 +287,19 @@ def test_reads_claims_once_its_own_clock_passes_not_before_moment():
         .json(),
         equal_to({"sub": "6161", "nbf": 4102444800}),
         "Token must judge nbf by its injected clock, not by real time",
+    )
+
+
+def test_refuses_claims_of_a_token_whose_not_before_moment_is_not_a_number():
+    signature = Hs256("twilight-secret-stretching-well-past-thirty-two-bytes")
+    assert_that(
+        calling(
+            JwtToken(
+                signature.encoded({"sub": "5150", "nbf": "dawn-of-tomorrow"}),
+                signature,
+                FakeClock(1234567),
+            ).claims
+        ),
+        raises(Exception, "not-before claim is not a number"),
+        "Token must refuse claims whose nbf moment is not a number",
     )

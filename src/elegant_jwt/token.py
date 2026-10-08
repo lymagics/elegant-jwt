@@ -37,9 +37,11 @@ class JwtToken(Token):
         self.clock = clock
 
     def claims(self) -> Claims:
-        payload = self._payload({"verify_exp": False})
+        payload = self._payload({"verify_exp": False, "verify_nbf": False})
         if "exp" in payload and self._validity(payload) == 0:
             raise Exception("The access token has expired.")
+        if "nbf" in payload and self._premature(payload):
+            raise Exception("The access token is not valid before its nbf moment.")
         return JwtClaims(payload)
 
     def expired(self) -> bool:
@@ -56,6 +58,13 @@ class JwtToken(Token):
             return self.signature.decoded(self.raw, options)
         except Exception as cause:
             raise Exception("The access token is not valid.") from cause
+
+    def _premature(self, payload: dict) -> bool:
+        try:
+            start = int(payload["nbf"])
+        except (TypeError, ValueError) as cause:
+            raise Exception("The not-before claim is not a number.") from cause
+        return start > self.clock.moment()
 
     def _validity(self, payload: dict) -> int:
         try:
