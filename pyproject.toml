@@ -22,7 +22,7 @@ dev = [
     "hypothesis==6.168.5",
     "black==26.10.0",
     "flake8==7.4.1",
-    "ruff==0.16.10",
+    "ruff==0.17.0",
 ]
 
 [build-system]
