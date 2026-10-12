@@ -1,3 +1,4 @@
+import pytest
 from hamcrest import (
     assert_that,
     calling,
@@ -302,4 +303,24 @@ def test_refuses_claims_of_a_token_whose_not_before_moment_is_not_a_number():
         ),
         raises(Exception, "not-before claim is not a number"),
         "Token must refuse claims whose nbf moment is not a number",
+    )
+
+
+# TODO: Bug: infinite exp leaks a raw OverflowError from validity(),
+# https://github.com/lymagics/elegant-jwt/pull/66
+@pytest.mark.skip(
+    reason="Bug: infinite exp leaks a raw OverflowError from validity(), "
+    "https://github.com/lymagics/elegant-jwt/pull/66"
+)
+def test_complains_about_infinite_expiration_claim_in_plain_words():
+    assert_that(
+        calling(
+            JwtToken(
+                "i.n.f",
+                FakeSignature("i.n.f", {"exp": float("inf")}),
+                FakeClock(8675),
+            ).validity
+        ),
+        raises(Exception, "expiration claim"),
+        "Token must complain in plain words when the expiration claim is infinite",
     )
