@@ -62,7 +62,7 @@ class JwtToken(Token):
     def _premature(self, payload: dict) -> bool:
         try:
             start = int(payload["nbf"])
-        except (TypeError, ValueError) as cause:
+        except (TypeError, ValueError, OverflowError) as cause:
             raise Exception("The not-before claim is not a number.") from cause
         return start > self.clock.moment()
 
@@ -71,7 +71,7 @@ class JwtToken(Token):
             expiration = int(payload["exp"])
         except KeyError as cause:
             raise Exception("The token has no expiration claim.") from cause
-        except (TypeError, ValueError) as cause:
+        except (TypeError, ValueError, OverflowError) as cause:
             raise Exception("The expiration claim is not a number.") from cause
         return max(0, expiration - self.clock.moment())
 
