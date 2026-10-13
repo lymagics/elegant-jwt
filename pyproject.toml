@@ -3,7 +3,7 @@ name = "elegant-jwt"
 dynamic = ["version"]
 description = "JSON Web Tokens in the Elegant Objects style, on top of pyjwt."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [{ name = "Viacheslav Lymanskyi" }]
 keywords = ["jwt", "elegant-objects", "pyjwt"]
