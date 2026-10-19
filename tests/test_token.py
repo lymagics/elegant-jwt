@@ -331,3 +331,18 @@ def test_complains_about_infinite_not_before_claim_in_plain_words():
         raises(Exception, "not-before claim is not a number"),
         "Token must complain in plain words when the not-before claim is infinite",
     )
+
+
+def test_reads_claims_of_a_token_issued_at_its_own_clock_moment():
+    signature = Hs256("chronicle-secret-stretching-beyond-thirty-two-bytes!")
+    assert_that(
+        JwtToken(
+            signature.encoded({"sub": "7331", "iat": 4102444800}),
+            signature,
+            FakeClock(4102444801),
+        )
+        .claims()
+        .json(),
+        equal_to({"sub": "7331", "iat": 4102444800}),
+        "Token must judge iat by its injected clock, not by real time",
+    )
