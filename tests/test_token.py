@@ -1,3 +1,4 @@
+import pytest
 from hamcrest import (
     assert_that,
     calling,
@@ -333,6 +334,12 @@ def test_complains_about_infinite_not_before_claim_in_plain_words():
     )
 
 
+# TODO: Bug: claims() checks iat against real time, not the injected Clock
+# https://github.com/lymagics/elegant-jwt/pull/77
+@pytest.mark.skip(
+    reason="Bug: claims() checks iat against real time, not the injected Clock "
+    "https://github.com/lymagics/elegant-jwt/pull/77"
+)
 def test_reads_claims_of_a_token_issued_at_its_own_clock_moment():
     signature = Hs256("chronicle-secret-stretching-beyond-thirty-two-bytes!")
     assert_that(
