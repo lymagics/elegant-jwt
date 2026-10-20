@@ -55,7 +55,7 @@ class JwtToken(Token):
 
     def _payload(self, options: dict) -> dict:
         try:
-            return self.signature.decoded(self.raw, options)
+            return self.signature.decoded(self.raw, {**options, "verify_iat": False})
         except Exception as cause:
             raise Exception("The access token is not valid.") from cause
 
