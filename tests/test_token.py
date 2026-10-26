@@ -198,6 +198,20 @@ def test_complains_about_non_numeric_expiration_claim():
     )
 
 
+def test_complains_about_expiration_claim_written_as_numeric_string():
+    assert_that(
+        calling(
+            JwtToken(
+                "s.t.rng",
+                FakeSignature("s.t.rng", {"exp": "4999"}),
+                FakeClock(4041),
+            ).validity
+        ),
+        raises(Exception, "expiration claim"),
+        "Token must complain when the expiration claim is a string",
+    )
+
+
 def test_agrees_with_expired_when_reading_claims_under_a_frozen_clock():
     signature = Hs256("frostbitten-secret-stretching-beyond-thirty-two-bytes")
     raw = signature.encoded({"sub": "70117", "exp": 100})
