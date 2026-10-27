@@ -1,4 +1,3 @@
-import pytest
 from hamcrest import (
     assert_that,
     calling,
@@ -199,14 +198,6 @@ def test_complains_about_non_numeric_expiration_claim():
     )
 
 
-# TODO: Bug: A numeric string such as "4999" is accepted as the exp claim,
-# but RFC 7519 requires a JSON number.
-# See https://github.com/lymagics/elegant-jwt/pull/85
-@pytest.mark.skip(
-    reason='Bug: A numeric string such as "4999" is accepted as the exp claim,'
-    " but RFC 7519 requires a JSON number."
-    " See https://github.com/lymagics/elegant-jwt/pull/85"
-)
 def test_complains_about_expiration_claim_written_as_numeric_string():
     assert_that(
         calling(
@@ -218,6 +209,48 @@ def test_complains_about_expiration_claim_written_as_numeric_string():
         ),
         raises(Exception, "expiration claim"),
         "Token must complain when the expiration claim is a string",
+    )
+
+
+def test_complains_about_expiration_claim_written_as_boolean():
+    assert_that(
+        calling(
+            JwtToken(
+                "b.o.ol",
+                FakeSignature("b.o.ol", {"exp": True}),
+                FakeClock(0),
+            ).validity
+        ),
+        raises(Exception, "expiration claim is not a number"),
+        "Token must complain when the expiration claim is a boolean",
+    )
+
+
+def test_refuses_claims_whose_not_before_moment_is_written_as_numeric_string():
+    assert_that(
+        calling(
+            JwtToken(
+                "q.u.ote",
+                FakeSignature("q.u.ote", {"nbf": "-17"}),
+                FakeClock(606),
+            ).claims
+        ),
+        raises(Exception, "not-before claim is not a number"),
+        "Token must refuse claims whose nbf moment is a string",
+    )
+
+
+def test_refuses_claims_whose_not_before_moment_is_written_as_boolean():
+    assert_that(
+        calling(
+            JwtToken(
+                "f.a.lse",
+                FakeSignature("f.a.lse", {"nbf": False}),
+                FakeClock(1),
+            ).claims
+        ),
+        raises(Exception, "not-before claim is not a number"),
+        "Token must refuse claims whose nbf moment is a boolean",
     )
 
 
