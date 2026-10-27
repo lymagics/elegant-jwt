@@ -60,20 +60,24 @@ class JwtToken(Token):
             raise Exception("The access token is not valid.") from cause
 
     def _premature(self, payload: dict) -> bool:
-        try:
-            start = int(payload["nbf"])
-        except (TypeError, ValueError, OverflowError) as cause:
-            raise Exception("The not-before claim is not a number.") from cause
+        start = self._moment(payload["nbf"], "The not-before claim is not a number.")
         return start > self.clock.moment()
 
     def _validity(self, payload: dict) -> int:
         try:
-            expiration = int(payload["exp"])
+            claim = payload["exp"]
         except KeyError as cause:
             raise Exception("The token has no expiration claim.") from cause
-        except (TypeError, ValueError, OverflowError) as cause:
-            raise Exception("The expiration claim is not a number.") from cause
+        expiration = self._moment(claim, "The expiration claim is not a number.")
         return max(0, expiration - self.clock.moment())
+
+    def _moment(self, claim: object, complaint: str) -> int:
+        if type(claim) not in (int, float):
+            raise Exception(complaint)
+        try:
+            return int(claim)
+        except (ValueError, OverflowError) as cause:
+            raise Exception(complaint) from cause
 
 
 class StrictToken(Token):
