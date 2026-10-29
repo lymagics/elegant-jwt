@@ -19,7 +19,7 @@ dev = [
     "pytest-randomly==5.0.0",
     "pytest-fail-slow==0.6.0",
     "pyhamcrest==2.1.0",
-    "hypothesis==6.170.12",
+    "hypothesis==6.170.13",
     "black==26.10.1",
     "flake8==7.5.0",
     "ruff==0.17.3",
