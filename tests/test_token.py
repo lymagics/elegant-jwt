@@ -1,4 +1,3 @@
-import pytest
 from hamcrest import (
     assert_that,
     calling,
@@ -418,12 +417,6 @@ def test_reports_validity_of_a_token_issued_at_its_own_clock_moment():
     )
 
 
-# TODO: Bug: fractional nbf is truncated, token accepted early, see
-# https://github.com/lymagics/elegant-jwt/pull/95
-@pytest.mark.skip(
-    reason="Bug: fractional nbf is truncated, token accepted early, "
-    "https://github.com/lymagics/elegant-jwt/pull/95"
-)
 def test_refuses_claims_while_fractional_nbf_is_still_ahead():
     assert_that(
         calling(

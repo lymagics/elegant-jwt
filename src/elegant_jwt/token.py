@@ -1,4 +1,6 @@
+import math
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 
 from plum import dispatch
 
@@ -60,7 +62,9 @@ class JwtToken(Token):
             raise Exception("The access token is not valid.") from cause
 
     def _premature(self, payload: dict) -> bool:
-        start = self._moment(payload["nbf"], "The not-before claim is not a number.")
+        start = self._moment(
+            payload["nbf"], "The not-before claim is not a number.", math.ceil
+        )
         return start > self.clock.moment()
 
     def _validity(self, payload: dict) -> int:
@@ -68,14 +72,18 @@ class JwtToken(Token):
             claim = payload["exp"]
         except KeyError as cause:
             raise Exception("The token has no expiration claim.") from cause
-        expiration = self._moment(claim, "The expiration claim is not a number.")
+        expiration = self._moment(
+            claim, "The expiration claim is not a number.", math.trunc
+        )
         return max(0, expiration - self.clock.moment())
 
-    def _moment(self, claim: object, complaint: str) -> int:
+    def _moment(
+        self, claim: object, complaint: str, rounding: Callable[[float], int]
+    ) -> int:
         if type(claim) not in (int, float):
             raise Exception(complaint)
         try:
-            return int(claim)
+            return rounding(claim)
         except (ValueError, OverflowError) as cause:
             raise Exception(complaint) from cause
 
