@@ -36,6 +36,17 @@ class Rs256(Signature):
         return jwt.decode(raw, self.public_key, algorithms=["RS256"], options=options)
 
 
+class Rs256Verification(Signature):
+    def __init__(self, public_key: str):
+        self.public_key = public_key
+
+    def encoded(self, payload: dict) -> str:
+        raise Exception("This signature only verifies tokens; it has no private key.")
+
+    def decoded(self, raw: str, options: dict) -> dict:
+        return jwt.decode(raw, self.public_key, algorithms=["RS256"], options=options)
+
+
 class Es256(Signature):
     def __init__(self, private_key: str, public_key: str):
         self.private_key = private_key
@@ -43,6 +54,17 @@ class Es256(Signature):
 
     def encoded(self, payload: dict) -> str:
         return jwt.encode(payload, self.private_key, algorithm="ES256")
+
+    def decoded(self, raw: str, options: dict) -> dict:
+        return jwt.decode(raw, self.public_key, algorithms=["ES256"], options=options)
+
+
+class Es256Verification(Signature):
+    def __init__(self, public_key: str):
+        self.public_key = public_key
+
+    def encoded(self, payload: dict) -> str:
+        raise Exception("This signature only verifies tokens; it has no private key.")
 
     def decoded(self, raw: str, options: dict) -> dict:
         return jwt.decode(raw, self.public_key, algorithms=["ES256"], options=options)

@@ -189,8 +189,14 @@ raw = JwtClaims({"sub": "42"}).token(signature).value()
 claims = JwtToken(raw, signature).claims()
 ```
 
-A service that only verifies tokens holds just the public key and never
-calls `encoded`.
+A service that only verifies tokens holds just the public key. It uses
+`Rs256Verification` or `Es256Verification`, which refuse to sign anything:
+
+```python
+from elegant_jwt import JwtToken, Rs256Verification
+
+claims = JwtToken(raw, Rs256Verification(public_pem)).claims()
+```
 
 ## Testing Without Waiting
 

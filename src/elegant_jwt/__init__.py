@@ -10,8 +10,10 @@ from elegant_jwt.clock import Clock, SystemClock
 from elegant_jwt.signature import (
     AudienceSignature,
     Es256,
+    Es256Verification,
     Hs256,
     Rs256,
+    Rs256Verification,
     Signature,
     StrictSignature,
 )
@@ -22,6 +24,7 @@ __all__ = [
     "Claims",
     "Clock",
     "Es256",
+    "Es256Verification",
     "ExpiringClaims",
     "Hs256",
     "IssuedClaims",
@@ -30,6 +33,7 @@ __all__ = [
     "JwtToken",
     "NotBeforeClaims",
     "Rs256",
+    "Rs256Verification",
     "Signature",
     "StrictSignature",
     "StrictToken",
