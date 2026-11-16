@@ -5,7 +5,16 @@ from hamcrest import assert_that, calling, equal_to, has_entry, raises
 from hypothesis import given
 from hypothesis import strategies as st
 
-from elegant_jwt import AudienceSignature, Es256, Hs256, Rs256, StrictSignature
+from elegant_jwt import (
+    AudienceSignature,
+    Es256,
+    Es256Verification,
+    Hs256,
+    Rs256,
+    Rs256Verification,
+    Signature,
+    StrictSignature,
+)
 from tests.fakes import FakeSignature
 
 
@@ -271,4 +280,67 @@ def test_decodes_through_origin():
         ),
         equal_to({"sub": 5040}),
         "Strict signature must leave decoding to its origin",
+    )
+
+
+def test_verifies_payload_signed_with_rsa_holding_only_public_key():
+    key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    pem = key.private_bytes(
+        serialization.Encoding.PEM,
+        serialization.PrivateFormat.PKCS8,
+        serialization.NoEncryption(),
+    ).decode()
+    pub = (
+        key.public_key()
+        .public_bytes(
+            serialization.Encoding.PEM,
+            serialization.PublicFormat.SubjectPublicKeyInfo,
+        )
+        .decode()
+    )
+    assert_that(
+        Rs256Verification(pub).decoded(
+            Rs256(pem, pub).encoded({"sub": "1848", "role": "gateway"}), {}
+        ),
+        equal_to({"sub": "1848", "role": "gateway"}),
+        "RS256 verification must restore a payload with just the public key",
+    )
+
+
+def test_verifies_payload_signed_with_elliptic_curve_holding_only_public_key():
+    key = ec.generate_private_key(ec.SECP256R1())
+    pem = key.private_bytes(
+        serialization.Encoding.PEM,
+        serialization.PrivateFormat.PKCS8,
+        serialization.NoEncryption(),
+    ).decode()
+    pub = (
+        key.public_key()
+        .public_bytes(
+            serialization.Encoding.PEM,
+            serialization.PublicFormat.SubjectPublicKeyInfo,
+        )
+        .decode()
+    )
+    assert_that(
+        Es256Verification(pub).decoded(
+            Es256(pem, pub).encoded({"sub": "1215", "scope": "read:ledger"}), {}
+        ),
+        equal_to({"sub": "1215", "scope": "read:ledger"}),
+        "ES256 verification must restore a payload with just the public key",
+    )
+
+
+@pytest.mark.parametrize(
+    "verification",
+    [
+        Rs256Verification("-----BEGIN PUBLIC KEY-----\nrsa?\n-----END PUBLIC KEY-----"),
+        Es256Verification(""),
+    ],
+)
+def test_refuses_to_encode_without_private_key(verification: Signature):
+    assert_that(
+        calling(verification.encoded).with_args({"sub": "0", "jti": "\u0000"}),
+        raises(Exception, "only verifies tokens; it has no private key"),
+        "A signature without a private key must refuse to encode",
     )
