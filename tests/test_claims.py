@@ -1,4 +1,3 @@
-import pytest
 from hamcrest import (
     assert_that,
     calling,
@@ -242,14 +241,6 @@ def test_stacks_decorators_into_one_payload():
     )
 
 
-# TODO: Bug: numeric sub is signed but never read back, see
-# https://github.com/lymagics/elegant-jwt/pull/104
-@pytest.mark.skip(
-    reason=(
-        "Bug: numeric sub is signed but never read back, see "
-        "https://github.com/lymagics/elegant-jwt/pull/104"
-    )
-)
 def test_refuses_to_sign_a_subject_that_is_not_a_string():
     assert_that(
         calling(JwtClaims({"sub": 90210}).token).with_args(
@@ -257,4 +248,14 @@ def test_refuses_to_sign_a_subject_that_is_not_a_string():
         ),
         raises(Exception, "The claims could not be signed"),
         "Claims must refuse a numeric subject, since no token can read it back",
+    )
+
+
+def test_refuses_to_sign_an_identity_that_is_not_a_string():
+    assert_that(
+        calling(JwtClaims({"jti": -0.5}).token).with_args(
+            Hs256("lantern-secret-that-burns-past-thirty-two-bytes")
+        ),
+        raises(Exception, "The claims could not be signed"),
+        "Claims must refuse a numeric identity, since no token can read it back",
     )
