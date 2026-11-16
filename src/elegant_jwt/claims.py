@@ -6,7 +6,7 @@ from uuid import uuid4
 from plum import dispatch
 
 from elegant_jwt.clock import Clock, SystemClock
-from elegant_jwt.signature import Signature
+from elegant_jwt.signature import Signature, StrictSignature
 
 if TYPE_CHECKING:
     from elegant_jwt.token import Token
@@ -30,7 +30,7 @@ class JwtClaims(Claims):
         from elegant_jwt.token import JwtToken
 
         try:
-            return JwtToken(signature.encoded(self.json()), signature)
+            return JwtToken(StrictSignature(signature).encoded(self.json()), signature)
         except Exception as cause:
             raise Exception("The claims could not be signed.") from cause
 

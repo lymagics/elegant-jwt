@@ -7,7 +7,14 @@ from elegant_jwt.claims import (
     NotBeforeClaims,
 )
 from elegant_jwt.clock import Clock, SystemClock
-from elegant_jwt.signature import AudienceSignature, Es256, Hs256, Rs256, Signature
+from elegant_jwt.signature import (
+    AudienceSignature,
+    Es256,
+    Hs256,
+    Rs256,
+    Signature,
+    StrictSignature,
+)
 from elegant_jwt.token import JwtToken, StrictToken, Token
 
 __all__ = [
@@ -24,6 +31,7 @@ __all__ = [
     "NotBeforeClaims",
     "Rs256",
     "Signature",
+    "StrictSignature",
     "StrictToken",
     "SystemClock",
     "Token",
