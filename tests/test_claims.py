@@ -242,9 +242,13 @@ def test_stacks_decorators_into_one_payload():
     )
 
 
-# TODO: Bug: claims sign a numeric subject that no token can read back, see https://github.com/lymagics/elegant-jwt/pull/102
+# TODO: Bug: numeric sub is signed but never read back, see
+# https://github.com/lymagics/elegant-jwt/pull/102
 @pytest.mark.skip(
-    reason="Bug: claims sign a numeric subject that no token can read back, see https://github.com/lymagics/elegant-jwt/pull/102"
+    reason=(
+        "Bug: numeric sub is signed but never read back, see "
+        "https://github.com/lymagics/elegant-jwt/pull/102"
+    )
 )
 def test_refuses_to_sign_a_subject_that_is_not_a_string():
     assert_that(
