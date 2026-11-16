@@ -12,6 +12,7 @@ from hamcrest import (
 
 from elegant_jwt import (
     ExpiringClaims,
+    Hs256,
     IssuedClaims,
     JtiClaims,
     JwtClaims,
@@ -237,4 +238,14 @@ def test_stacks_decorators_into_one_payload():
         ).json(),
         has_entries(sub="601", exp=9030, iat=9000, iss="initech"),
         "Stacked decorators must merge their claims into one payload",
+    )
+
+
+def test_refuses_to_sign_a_subject_that_is_not_a_string():
+    assert_that(
+        calling(JwtClaims({"sub": 90210}).token).with_args(
+            Hs256("orchard-secret-that-runs-past-thirty-two-bytes")
+        ),
+        raises(Exception, "The claims could not be signed"),
+        "Claims must refuse a numeric subject, since no token can read it back",
     )
