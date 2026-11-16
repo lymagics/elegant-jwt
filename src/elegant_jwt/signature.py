@@ -64,3 +64,17 @@ class AudienceSignature(Signature):
             audience=self.audience,
         )
         return payload
+
+
+class StrictSignature(Signature):
+    def __init__(self, origin: Signature):
+        self.origin = origin
+
+    def encoded(self, payload: dict) -> str:
+        for name in ("sub", "jti"):
+            if name in payload and not isinstance(payload[name], str):
+                raise Exception(f"The {name} claim must be a string.")
+        return self.origin.encoded(payload)
+
+    def decoded(self, raw: str, options: dict) -> dict:
+        return self.origin.decoded(raw, options)

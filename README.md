@@ -250,8 +250,8 @@ except Exception as trouble:
 
 - Every class is immutable; a change produces a new object.
 - New behavior comes from decorators (`StrictToken`, `ExpiringClaims`,
-  `IssuedClaims`, `NotBeforeClaims`, `JtiClaims`, `AudienceSignature`), not from
-  modification of existing classes.
+  `IssuedClaims`, `NotBeforeClaims`, `JtiClaims`, `AudienceSignature`,
+  `StrictSignature`), not from modification of existing classes.
 - The library performs no network and no filesystem access.
 
 ## Development

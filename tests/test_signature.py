@@ -1,10 +1,11 @@
+import pytest
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
 from hamcrest import assert_that, calling, equal_to, has_entry, raises
 from hypothesis import given
 from hypothesis import strategies as st
 
-from elegant_jwt import AudienceSignature, Es256, Hs256, Rs256
+from elegant_jwt import AudienceSignature, Es256, Hs256, Rs256, StrictSignature
 from tests.fakes import FakeSignature
 
 
@@ -236,4 +237,38 @@ def test_encodes_through_origin():
         ).encoded({"sub": "6174"}),
         equal_to("aud.ien.ce"),
         "Audience signature must leave encoding to its origin",
+    )
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [{"sub": True}, {"sub": ["ada"]}, {"jti": None}, {"jti": {"n": 1}}],
+)
+def test_refuses_to_encode_subject_or_identity_that_is_not_a_string(payload: dict):
+    assert_that(
+        calling(StrictSignature(FakeSignature("ne.ver.signed", {})).encoded).with_args(
+            payload
+        ),
+        raises(Exception, "claim must be a string"),
+        "Strict signature must refuse to encode a sub or jti that is not a string",
+    )
+
+
+def test_encodes_textual_claims_through_origin():
+    assert_that(
+        StrictSignature(FakeSignature("str.ic.t", {})).encoded(
+            {"sub": "", "jti": "🦉"}
+        ),
+        equal_to("str.ic.t"),
+        "Strict signature must pass textual claims on to its origin",
+    )
+
+
+def test_decodes_through_origin():
+    assert_that(
+        StrictSignature(FakeSignature("de.co.de", {"sub": 5040})).decoded(
+            "de.co.de", {}
+        ),
+        equal_to({"sub": 5040}),
+        "Strict signature must leave decoding to its origin",
     )
