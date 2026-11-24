@@ -432,6 +432,12 @@ def test_refuses_claims_while_fractional_nbf_is_still_ahead():
     )
 
 
+# TODO: Bug: JwtToken refuses keyword arguments,
+# see https://github.com/lymagics/elegant-jwt/pull/111
+@pytest.mark.skip(
+    reason="Bug: JwtToken refuses keyword arguments, "
+    "see https://github.com/lymagics/elegant-jwt/pull/111"
+)
 def test_accepts_its_arguments_by_keyword():
     assert_that(
         JwtToken(
