@@ -1,3 +1,4 @@
+import pytest
 from hamcrest import (
     assert_that,
     calling,
@@ -428,4 +429,15 @@ def test_refuses_claims_while_fractional_nbf_is_still_ahead():
         ),
         raises(Exception, "not valid before"),
         "Token must refuse claims while a fractional nbf moment is still ahead",
+    )
+
+
+def test_accepts_its_arguments_by_keyword():
+    assert_that(
+        JwtToken(
+            raw="key.word.args",
+            signature=FakeSignature("key.word.args", {"sub": "kw-0"}),
+        ).value(),
+        equal_to("key.word.args"),
+        "Token must accept its raw value and signature passed by keyword",
     )
